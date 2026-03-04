@@ -1,0 +1,52 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
+from django.contrib.auth.base_user import BaseUserManager
+from django.db.models import QuerySet
+
+
+if TYPE_CHECKING:
+    from .models import User
+
+
+class UserManager(BaseUserManager["User"]):
+    """Custom manager for User model with email as unique identifier."""
+
+    use_in_migrations = True
+
+    def get_queryset(self) -> QuerySet["User"]:
+        return super().get_queryset()
+
+    def _create_user(
+        self, email: str, password: str | None, **extra_fields: Any
+    ) -> "User":
+        if not email:
+            raise ValueError("The email field must be set.")
+
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(
+        self, email: str, password: str | None = None, **extra_fields: Any
+    ) -> "User":
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(
+        self, email: str, password: str | None, **extra_fields: Any
+    ) -> "User":
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
+
+        return self._create_user(email, password, **extra_fields)
