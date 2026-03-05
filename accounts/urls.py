@@ -26,4 +26,3 @@ urlpatterns = [
         name="user-detail",
     ),
 ]
-

@@ -24,4 +24,3 @@ class IsSelfOrStaff(BasePermission):
 
         obj_id = getattr(obj, "id", None)
         return obj_id == getattr(user, "id", None)
-

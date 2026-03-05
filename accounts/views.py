@@ -27,7 +27,9 @@ class UserListCreateAPIView(generics.ListCreateAPIView[User]):
             return [permissions.AllowAny()]
         return [permissions.IsAuthenticated(), permissions.IsAdminUser()]
 
-    def get_serializer_class(self) -> type[UserReadSerializer] | type[UserRegistrationSerializer]:
+    def get_serializer_class(
+        self,
+    ) -> type[UserReadSerializer] | type[UserRegistrationSerializer]:
         if self.request.method == "POST":
             return UserRegistrationSerializer
         return UserReadSerializer
@@ -61,7 +63,9 @@ class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView[Use
     queryset = User.objects.all()
     permission_classes = [permissions.IsAuthenticated, IsSelfOrStaff]
 
-    def get_serializer_class(self) -> type[UserReadSerializer] | type[UserUpdateSerializer]:
+    def get_serializer_class(
+        self,
+    ) -> type[UserReadSerializer] | type[UserUpdateSerializer]:
         if self.request.method in ("PATCH", "PUT"):
             return UserUpdateSerializer
         return UserReadSerializer
@@ -73,4 +77,3 @@ class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView[Use
                 status=status.HTTP_403_FORBIDDEN,
             )
         return super().delete(request, *args, **kwargs)
-

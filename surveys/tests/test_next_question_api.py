@@ -84,7 +84,9 @@ class NextQuestionAPITests(APITestCase):
         self.assertEqual(response.data["question"]["id"], self.question2.id)
 
     def test_marks_survey_as_finished_when_all_answered(self) -> None:
-        for index, question in enumerate((self.question1, self.question2, self.question3), start=1):
+        for index, question in enumerate(
+            (self.question1, self.question2, self.question3), start=1
+        ):
             answer = Answer.objects.create(
                 question=question,
                 text=f"Answer {index}",
@@ -105,14 +107,18 @@ class NextQuestionAPITests(APITestCase):
         self.assertIsNone(response.data["question"])
 
     def test_404_when_survey_not_found(self) -> None:
-        url = self._build_url(survey_id=self.survey.id + 1, submission_id=self.submission.id)
+        url = self._build_url(
+            survey_id=self.survey.id + 1, submission_id=self.submission.id
+        )
 
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_404_when_submission_not_found(self) -> None:
-        url = self._build_url(survey_id=self.survey.id, submission_id=self.submission.id + 1)
+        url = self._build_url(
+            survey_id=self.survey.id, submission_id=self.submission.id + 1
+        )
 
         response = self.client.get(url)
 
@@ -127,10 +133,11 @@ class NextQuestionAPITests(APITestCase):
             survey=other_survey,
         )
 
-        url = self._build_url(survey_id=self.survey.id, submission_id=other_submission.id)
+        url = self._build_url(
+            survey_id=self.survey.id, submission_id=other_submission.id
+        )
 
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("detail", response.data)
-

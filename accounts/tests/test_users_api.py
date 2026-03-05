@@ -199,4 +199,3 @@ class UsersApiTests(APITestCase):
 
         self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(User.objects.filter(id=regular.id).exists())
-

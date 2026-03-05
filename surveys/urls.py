@@ -9,4 +9,3 @@ urlpatterns = [
         name="survey-next-question",
     ),
 ]
-
