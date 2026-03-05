@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .models import User
 
 
-class UserManager(BaseUserManager["User"]):
+class UserManager(BaseUserManager["User"]):  # type: ignore[type-arg]
     """Custom manager for User model with email as unique identifier."""
 
     use_in_migrations = True

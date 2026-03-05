@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
-from rest_framework.views import View
+from rest_framework.views import APIView
 
 
 class IsSelfOrStaff(BasePermission):
@@ -11,7 +11,7 @@ class IsSelfOrStaff(BasePermission):
     def has_object_permission(
         self,
         request: Request,
-        view: View,
+        view: APIView,
         obj: object,
     ) -> bool:
         user = request.user

@@ -15,6 +15,11 @@ UGC_SURVEY_REQUESTS_TOTAL: Counter = Counter(
     "Total number of survey next-question API requests.",
 )
 
+USER_REGISTRATION_REQUESTS_TOTAL: Counter = Counter(
+    "user_registration_requests_total",
+    "Total number of user registration requests.",
+)
+
 HTTP_REQUESTS_TOTAL: Counter = Counter(
     "ugc_http_requests_total",
     "Total number of HTTP requests processed by Django.",
@@ -32,5 +37,3 @@ def metrics_view(request: HttpRequest) -> HttpResponse:
     """Expose Prometheus metrics for the Django application."""
     metrics_payload = generate_latest(REGISTRY)
     return HttpResponse(metrics_payload, content_type=CONTENT_TYPE_LATEST)
-
-

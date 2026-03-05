@@ -1,20 +1,17 @@
 from __future__ import annotations
 
-from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions, status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from accounts.models import User
 from accounts.permissions import IsSelfOrStaff
 from accounts.serializers import (
     UserReadSerializer,
     UserRegistrationSerializer,
     UserUpdateSerializer,
 )
-
-
-User = get_user_model()
 
 
 class UserListCreateAPIView(generics.ListCreateAPIView[User]):

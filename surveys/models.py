@@ -161,7 +161,7 @@ class Submission(TimeStampedModel):
         related_name="submissions",
         verbose_name="Survey",
     )
-    user: models.ForeignKey = models.ForeignKey(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,

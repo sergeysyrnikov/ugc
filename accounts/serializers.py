@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from django.contrib.auth import get_user_model
+from accounts.models import User
 from rest_framework import serializers
 
-User = get_user_model()
+from ugc.metrics import USER_REGISTRATION_REQUESTS_TOTAL
 
 
 class UserReadSerializer(serializers.ModelSerializer):
@@ -43,6 +43,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             password=password,
             display_name=display_name,
         )
+        USER_REGISTRATION_REQUESTS_TOTAL.inc()
         return user
 
 
@@ -59,7 +60,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     def update(self, instance: User, validated_data: dict[str, object]) -> User:
         request = self.context.get("request")
-        is_admin = bool(getattr(request, "user", None) and request.user.is_staff)
+        is_admin = bool(
+            request is not None
+            and getattr(request, "user", None) is not None
+            and request.user.is_staff
+        )
 
         if not is_admin:
             validated_data.pop("is_active", None)

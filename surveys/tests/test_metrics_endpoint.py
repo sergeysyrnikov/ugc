@@ -59,4 +59,3 @@ class MetricsEndpointTests(APITestCase):
         body = metrics_response.content.decode("utf-8")
         self.assertIn("python_gc_objects_collected_total", body)
         self.assertIn("ugc_survey_requests_total", body)
-

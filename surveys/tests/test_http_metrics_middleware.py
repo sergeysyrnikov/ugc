@@ -64,4 +64,3 @@ class HttpMetricsMiddlewareTests(APITestCase):
         self.assertIn("ugc_http_request_latency_seconds_bucket", body)
         self.assertIn('method="GET"', body)
         self.assertIn('status_code="200"', body)
-

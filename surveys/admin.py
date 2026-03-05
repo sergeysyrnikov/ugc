@@ -27,7 +27,7 @@ class QuestionTemplateAdmin(admin.ModelAdmin):
     def short_text(self, obj: QuestionTemplate) -> str:
         return str(obj)
 
-    short_text.short_description = "Question"
+    short_text.short_description = "Question"  # type: ignore[attr-defined]
 
 
 @admin.register(Question)

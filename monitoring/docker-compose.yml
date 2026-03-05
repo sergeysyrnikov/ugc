@@ -11,6 +11,8 @@ services:
     ports:
       - "9090:9090"
     network_mode: "host"
+    restart: always
+
 
   grafana:
     image: grafana/grafana:11.0.0
@@ -22,6 +24,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
+    restart: always
 
 volumes:
   grafana-data:
