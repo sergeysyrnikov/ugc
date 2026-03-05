@@ -2,16 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 from django.test import TestCase
 
-from surveys.models import (
-    Answer,
-    AnswerOption,
-    Question,
-    QuestionTemplate,
-    Submission,
-    SubmissionAnswer,
-    Survey,
-    SurveyStatus,
-)
+from surveys.models import Answer, Question, QuestionTemplate, Submission, SubmissionAnswer, Survey, SurveyStatus
 
 User = get_user_model()
 
@@ -41,7 +32,7 @@ class SurveyModelsTests(TestCase):
         self.assertEqual(survey.author, self.author)
         self.assertEqual(survey.status, SurveyStatus.DRAFT)
 
-    def test_question_and_answer_option_ordering(self) -> None:
+    def test_question_and_answer_ordering(self) -> None:
         survey = Survey.objects.create(
             title="Ordering test",
             author=self.author,
@@ -62,18 +53,18 @@ class SurveyModelsTests(TestCase):
         self.assertEqual(questions[0], question1)
         self.assertEqual(questions[1], question2)
 
-        option_b = AnswerOption.objects.create(
+        option_b = Answer.objects.create(
             question=question1,
             text="Option B",
             order=2,
         )
-        option_a = AnswerOption.objects.create(
+        option_a = Answer.objects.create(
             question=question1,
             text="Option A",
             order=1,
         )
 
-        options = list(question1.answer_options.all())
+        options = list(question1.answers.all())
         self.assertEqual(options[0], option_a)
         self.assertEqual(options[1], option_b)
 
@@ -87,7 +78,7 @@ class SurveyModelsTests(TestCase):
             text="How are you?",
             order=1,
         )
-        option = AnswerOption.objects.create(
+        option = Answer.objects.create(
             question=question,
             text="Good",
             order=1,
@@ -100,14 +91,14 @@ class SurveyModelsTests(TestCase):
         answer = SubmissionAnswer.objects.create(
             submission=submission,
             question=question,
-            answer_option=option,
+            answer=option,
         )
 
         self.assertEqual(submission.survey, survey)
         self.assertEqual(submission.user, self.respondent)
         self.assertEqual(answer.submission, submission)
         self.assertEqual(answer.question, question)
-        self.assertEqual(answer.answer_option, option)
+        self.assertEqual(answer.answer, option)
 
     def test_submission_answer_unique_per_question(self) -> None:
         survey = Survey.objects.create(
@@ -119,7 +110,7 @@ class SurveyModelsTests(TestCase):
             text="Question?",
             order=1,
         )
-        option = AnswerOption.objects.create(
+        option = Answer.objects.create(
             question=question,
             text="Yes",
             order=1,
@@ -132,7 +123,7 @@ class SurveyModelsTests(TestCase):
         SubmissionAnswer.objects.create(
             submission=submission,
             question=question,
-            answer_option=option,
+            answer=option,
         )
 
         with self.assertRaises(IntegrityError):
@@ -140,7 +131,7 @@ class SurveyModelsTests(TestCase):
                 SubmissionAnswer.objects.create(
                     submission=submission,
                     question=question,
-                    answer_option=option,
+                    answer=option,
                 )
 
     def test_question_template_basic_fields(self) -> None:

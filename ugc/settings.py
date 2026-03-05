@@ -81,12 +81,12 @@ WSGI_APPLICATION = "ugc.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DB_ENGINE = os.environ.get("DB_ENGINE", "django.db.backends.postgresql")
-DB_NAME = os.environ.get("DB_NAME", "ugc")
-DB_USER = os.environ.get("DB_USER", "ugc")
-DB_PASSWORD = os.environ.get("DB_PASSWORD", "ugc")
-DB_HOST = os.environ.get("DB_HOST", "localhost")
-DB_PORT = os.environ.get("DB_PORT", "5432")
+DB_ENGINE = os.environ.get("DB_ENGINE", "django.db.backends.sqlite3")
+DB_NAME = os.environ.get("DB_NAME", str(BASE_DIR / "db.sqlite3"))
+DB_USER = os.environ.get("DB_USER", "")
+DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
+DB_HOST = os.environ.get("DB_HOST", "")
+DB_PORT = os.environ.get("DB_PORT", "")
 
 DATABASES = {
     "default": {
