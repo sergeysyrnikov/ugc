@@ -15,6 +15,10 @@ class NextQuestionAPITests(APITestCase):
             email="author@example.com",
             password="password123",
         )
+        self.user = user_model.objects.create_user(
+            email="respondent@example.com",
+            password="password123",
+        )
 
         self.survey = Survey.objects.create(
             title="Simple survey",
@@ -40,6 +44,9 @@ class NextQuestionAPITests(APITestCase):
         self.submission = Submission.objects.create(
             survey=self.survey,
         )
+
+        # Authenticate API client, as the endpoint requires IsAuthenticated.
+        self.client.force_authenticate(user=self.user)
 
     def _build_url(self, survey_id: int, submission_id: int) -> str:
         return reverse(
