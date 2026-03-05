@@ -28,4 +28,3 @@ class QuestionSerializer(serializers.ModelSerializer):
             "order",
             "answers",
         ]
-
