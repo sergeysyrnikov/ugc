@@ -2,7 +2,15 @@ from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 from django.test import TestCase
 
-from surveys.models import Answer, Question, QuestionTemplate, Submission, SubmissionAnswer, Survey, SurveyStatus
+from surveys.models import (
+    Answer,
+    Question,
+    QuestionTemplate,
+    Submission,
+    SubmissionAnswer,
+    Survey,
+    SurveyStatus,
+)
 
 User = get_user_model()
 
