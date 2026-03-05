@@ -3,17 +3,17 @@ from __future__ import annotations
 from django.http import HttpRequest, HttpResponse
 from prometheus_client import (
     CONTENT_TYPE_LATEST,
+    REGISTRY,
     Counter,
     Histogram,
-    REGISTRY,
     generate_latest,
 )
-
 
 UGC_SURVEY_REQUESTS_TOTAL: Counter = Counter(
     "ugc_survey_requests_total",
     "Total number of survey next-question API requests.",
 )
+
 
 USER_REGISTRATION_REQUESTS_TOTAL: Counter = Counter(
     "user_registration_requests_total",
