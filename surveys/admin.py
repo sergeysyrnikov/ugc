@@ -33,7 +33,7 @@ class QuestionTemplateAdmin(admin.ModelAdmin):
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ("id", "survey", "order")
-    list_filter = ("survey",)
+    list_filter = ()
     search_fields = ("text",)
     raw_id_fields = ("survey",)
 
@@ -41,9 +41,10 @@ class QuestionAdmin(admin.ModelAdmin):
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
     list_display = ("id", "question", "order")
-    list_filter = ("question",)
+    list_filter = ()
     search_fields = ("text",)
     raw_id_fields = ("question",)
+    list_select_related = ("question", "question__survey")
 
 
 @admin.register(Submission)

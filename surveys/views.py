@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 
 from surveys.models import Question, Submission, SubmissionAnswer, Survey
 from surveys.serializers import QuestionSerializer
+from ugc.metrics import UGC_SURVEY_REQUESTS_TOTAL
 
 
 class NextQuestionAPIView(APIView):
@@ -13,6 +14,7 @@ class NextQuestionAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, survey_id: int, submission_id: int) -> Response:
+        UGC_SURVEY_REQUESTS_TOTAL.inc()
         try:
             survey = Survey.objects.get(pk=survey_id)
         except Survey.DoesNotExist:
