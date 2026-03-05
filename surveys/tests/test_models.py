@@ -3,15 +3,15 @@ from django.db import IntegrityError, transaction
 from django.test import TestCase
 
 from surveys.models import (
+    Answer,
     AnswerOption,
     Question,
+    QuestionTemplate,
     Submission,
     SubmissionAnswer,
     Survey,
     SurveyStatus,
-    QuestionTemplate,
 )
-
 
 User = get_user_model()
 
@@ -168,3 +168,51 @@ class SurveyModelsTests(TestCase):
         self.assertEqual(question.text, template.text)
         self.assertEqual(question.survey, survey)
 
+    def test_question_order_must_be_between_1_and_30(self) -> None:
+        survey = Survey.objects.create(
+            title="Order constraint survey",
+            author=self.author,
+        )
+
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                Question.objects.create(
+                    survey=survey,
+                    text="Invalid order low",
+                    order=0,
+                )
+
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                Question.objects.create(
+                    survey=survey,
+                    text="Invalid order high",
+                    order=31,
+                )
+
+    def test_answer_order_must_be_between_1_and_15(self) -> None:
+        survey = Survey.objects.create(
+            title="Answer order constraint survey",
+            author=self.author,
+        )
+        question = Question.objects.create(
+            survey=survey,
+            text="Question with options",
+            order=1,
+        )
+
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                Answer.objects.create(
+                    question=question,
+                    text="Invalid low",
+                    order=0,
+                )
+
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                Answer.objects.create(
+                    question=question,
+                    text="Invalid high",
+                    order=16,
+                )

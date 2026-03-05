@@ -39,8 +39,6 @@ class Survey(TimeStampedModel):
     author: models.ForeignKey = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
-        null=True,
-        blank=True,
         related_name="surveys",
         verbose_name="Author",
     )
@@ -65,6 +63,7 @@ class QuestionTemplate(TimeStampedModel):
     """Represents a reusable question template."""
 
     text: models.TextField = models.TextField(
+        max_length=512,
         verbose_name="Question text",
     )
 
@@ -87,9 +86,10 @@ class Question(TimeStampedModel):
         verbose_name="Survey",
     )
     text: models.TextField = models.TextField(
+        max_length=512,
         verbose_name="Question text",
     )
-    order: models.PositiveIntegerField = models.PositiveIntegerField(
+    order: models.PositiveSmallIntegerField = models.PositiveSmallIntegerField(
         verbose_name="Order",
     )
 
@@ -101,6 +101,12 @@ class Question(TimeStampedModel):
             models.Index(
                 fields=["survey", "order"],
                 name="question_survey_order_idx",
+            ),
+        ]
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(order__gte=1, order__lte=30),
+                name="question_order_between_1_and_30",
             ),
         ]
 
@@ -121,7 +127,7 @@ class Answer(TimeStampedModel):
         max_length=512,
         verbose_name="Answer text",
     )
-    order: models.PositiveIntegerField = models.PositiveIntegerField(
+    order: models.PositiveSmallIntegerField = models.PositiveSmallIntegerField(
         verbose_name="Order",
     )
 
@@ -133,6 +139,12 @@ class Answer(TimeStampedModel):
             models.Index(
                 fields=["question", "order"],
                 name="answer_question_order_idx",
+            ),
+        ]
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(order__gte=1, order__lte=15),
+                name="answer_order_between_1_and_15",
             ),
         ]
 
@@ -151,7 +163,9 @@ class Submission(TimeStampedModel):
     )
     user: models.ForeignKey = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name="submissions",
         verbose_name="User",
     )
@@ -168,12 +182,6 @@ class Submission(TimeStampedModel):
     class Meta:
         verbose_name = "Submission"
         verbose_name_plural = "Submissions"
-        indexes = [
-            models.Index(
-                fields=["user", "survey"],
-                name="submission_user_survey_idx",
-            ),
-        ]
 
     def __str__(self) -> str:
         return f"Submission #{self.pk} for {self.survey_id}"
@@ -199,12 +207,11 @@ class SubmissionAnswer(TimeStampedModel):
         on_delete=models.CASCADE,
         related_name="submission_answers",
         verbose_name="Answer",
-        null=True,
-        blank=True,
     )
     free_text: models.TextField = models.TextField(
         blank=True,
         verbose_name="Free text",
+        help_text="Optional user-entered free text answer.",
     )
     answered_at: models.DateTimeField = models.DateTimeField(
         auto_now_add=True,
