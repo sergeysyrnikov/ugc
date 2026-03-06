@@ -83,10 +83,24 @@ Cистема пользовательских опросов (UGC).
   - `DELETE /api/users/{id}/` — удаление пользователя.
   - `GET /api/users/me/` — текущий аутентифицированный пользователь.
 
-- **Опросы**
+- **Опросы (`/api/surveys/` префикс, staff-only CRUD)**
+  - `GET /api/surveys/` — список опросов (только для пользователей с `is_staff=True`).
+  - `POST /api/surveys/` — создание опроса; автор по умолчанию берётся из текущего пользователя.
+  - `GET /api/surveys/{id}/`, `PATCH /api/surveys/{id}/`, `DELETE /api/surveys/{id}/` — детальный просмотр, обновление и удаление опроса (только `is_staff`).
+  - `GET /api/surveys/question-templates/` и CRUD по `id` — управление шаблонами вопросов (только `is_staff`).
+  - `GET /api/surveys/questions/` и CRUD по `id` — управление вопросами в опросах (только `is_staff`).
+  - `GET /api/surveys/answers/` и CRUD по `id` — управление вариантами ответов (только `is_staff`).
+  - `GET /api/surveys/submissions/` и CRUD по `id` — управление попытками прохождения опросов (только `is_staff`).
+  - `GET /api/surveys/submission-answers/` и CRUD по `id` — управление ответами в рамках конкретной попытки (только `is_staff`).
   - `GET /api/surveys/{survey_id}/submissions/{submission_id}/next-question/` — следующий вопрос для прохождения опроса (см. раздел выше).
 
 Полное описание схемы и всех полей доступно в интерактивной документации (см. ниже).
+
+## MCP-интеграция для ViewSet-ов опросов
+
+- **Endpoint MCP**: `POST /mcp/` — точка входа `django-rest-framework-mcp` для вызова инструментов (tools).
+- **Поддерживаемые ViewSet-ы**: все `ModelViewSet` в приложении `surveys` (`SurveyViewSet`, `QuestionViewSet`, `AnswerViewSet`, `SubmissionViewSet`, `SubmissionAnswerViewSet`, `QuestionTemplateViewSet`) помечены декоратором `@mcp_viewset()`, поэтому их операции списка/создания/обновления/удаления доступны как MCP-инструменты (например, `list_questions` для выборки вопросов).
+- **Авторизация**: MCP использует те же JWT-токены и права доступа (`is_staff`), что и обычный REST API.
 
 ## Документация API
 
