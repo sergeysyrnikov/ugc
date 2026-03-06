@@ -53,6 +53,19 @@ wheels = [
 ]
 
 [[package]]
+name = "django-rest-framework-mcp"
+version = "0.1.0a4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "djangorestframework" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1c/bb/75f608049b30957ffc27daa4d34de4d473a7e736d1668592261cb75f3a17/django_rest_framework_mcp-0.1.0a4.tar.gz", hash = "sha256:a1709ef74919ea40ded8ca898de904950269f91818bbbfe2393cf1f1c02211ba", size = 29750, upload-time = "2025-11-25T21:21:51.389Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c8/50/51b25e92bb6deda64fccc04cd56afc9dbc7ee1f7d13cee27f50efd8f33f0/django_rest_framework_mcp-0.1.0a4-py3-none-any.whl", hash = "sha256:38246607681613aaa8777b3107673e3c86a7106f9bbeb94207677438a09f0ff9", size = 30259, upload-time = "2025-11-25T21:21:50.476Z" },
+]
+
+[[package]]
 name = "django-stubs"
 version = "5.2.9"
 source = { registry = "https://pypi.org/simple" }
@@ -526,6 +539,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "django" },
+    { name = "django-rest-framework-mcp" },
     { name = "djangorestframework" },
     { name = "djangorestframework-simplejwt" },
     { name = "drf-yasg" },
@@ -547,6 +561,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "django", specifier = ">=6.0.3" },
+    { name = "django-rest-framework-mcp", specifier = ">=0.1.0a4" },
     { name = "djangorestframework", specifier = ">=3.16.1" },
     { name = "djangorestframework-simplejwt", specifier = ">=5.5.1" },
     { name = "drf-yasg", specifier = ">=1.21.15" },

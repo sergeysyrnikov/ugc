@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from djangorestframework_mcp.decorators import mcp_viewset
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,6 +26,7 @@ from surveys.serializers import (
 from ugc.metrics import UGC_SURVEY_REQUESTS_TOTAL
 
 
+@mcp_viewset()
 class SurveyViewSet(ModelViewSet[Survey]):
     """CRUD for surveys. Staff only."""
 
@@ -33,6 +35,7 @@ class SurveyViewSet(ModelViewSet[Survey]):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
 
+@mcp_viewset()
 class QuestionTemplateViewSet(ModelViewSet[QuestionTemplate]):
     """CRUD for question templates. Staff only."""
 
@@ -41,6 +44,7 @@ class QuestionTemplateViewSet(ModelViewSet[QuestionTemplate]):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
 
+@mcp_viewset()
 class QuestionViewSet(ModelViewSet[Question]):
     """CRUD for questions. Staff only."""
 
@@ -49,6 +53,7 @@ class QuestionViewSet(ModelViewSet[Question]):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
 
+@mcp_viewset()
 class AnswerViewSet(ModelViewSet[Answer]):
     """CRUD for answers. Staff only."""
 
@@ -57,6 +62,7 @@ class AnswerViewSet(ModelViewSet[Answer]):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
 
+@mcp_viewset()
 class SubmissionViewSet(ModelViewSet[Submission]):
     """CRUD for submissions. Staff only."""
 
@@ -65,6 +71,7 @@ class SubmissionViewSet(ModelViewSet[Submission]):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
 
+@mcp_viewset()
 class SubmissionAnswerViewSet(ModelViewSet[SubmissionAnswer]):
     """CRUD for submission answers. Staff only."""
 
@@ -76,7 +83,7 @@ class SubmissionAnswerViewSet(ModelViewSet[SubmissionAnswer]):
 class NextQuestionAPIView(APIView):
     """Return the next unanswered question for a given survey submission."""
 
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, survey_id: int, submission_id: int) -> Response:
         UGC_SURVEY_REQUESTS_TOTAL.inc()

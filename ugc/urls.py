@@ -43,6 +43,7 @@ urlpatterns = [
         TokenRefreshView.as_view(),
         name="token_refresh",
     ),
+    path("mcp/", include("djangorestframework_mcp.urls")),
     path("api/surveys/", include("surveys.urls")),
     path("api/users/", include("accounts.urls")),
 ]
