@@ -83,10 +83,10 @@ Cистема пользовательских опросов (UGC).
   - `DELETE /api/users/{id}/` — удаление пользователя.
   - `GET /api/users/me/` — текущий аутентифицированный пользователь.
 
-- **Опросы (`/api/surveys/` префикс, staff-only CRUD)**
-  - `GET /api/surveys/` — список опросов (только для пользователей с `is_staff=True`).
-  - `POST /api/surveys/` — создание опроса; автор по умолчанию берётся из текущего пользователя.
-  - `GET /api/surveys/{id}/`, `PATCH /api/surveys/{id}/`, `DELETE /api/surveys/{id}/` — детальный просмотр, обновление и удаление опроса (только `is_staff`).
+- **Опросы (`/api/surveys/` префикс)**
+  - `GET /api/surveys/`, `GET /api/surveys/{id}/` — список и детальный просмотр опросов (любой аутентифицированный пользователь).
+  - `POST /api/surveys/` — создание опроса; автор по умолчанию — текущий пользователь (только `is_staff`).
+  - `PATCH /api/surveys/{id}/`, `DELETE /api/surveys/{id}/` — обновление и удаление опроса (только `is_staff`).
   - `GET /api/surveys/question-templates/` и CRUD по `id` — управление шаблонами вопросов (только `is_staff`).
   - `GET /api/surveys/questions/` и CRUD по `id` — управление вопросами в опросах (только `is_staff`).
   - `GET /api/surveys/answers/` и CRUD по `id` — управление вариантами ответов (только `is_staff`).

@@ -28,11 +28,15 @@ from ugc.metrics import UGC_SURVEY_REQUESTS_TOTAL
 
 @mcp_viewset()
 class SurveyViewSet(ModelViewSet[Survey]):
-    """CRUD for surveys. Staff only."""
+    """CRUD for surveys. List and retrieve: any authenticated user; create/update/delete: staff only."""
+
+    def get_permissions(self) -> list[permissions.BasePermission]:
+        if self.action in ["list", "retrieve"]:
+            return [permissions.IsAuthenticated()]
+        return [permissions.IsAuthenticated(), permissions.IsAdminUser()]
 
     queryset = Survey.objects.all().order_by("-created_at")
     serializer_class = SurveySerializer
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
 
 @mcp_viewset()
