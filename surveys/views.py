@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
+from surveys.permissions import IsSurveyAuthorOrStaff
 from surveys.models import (
     Answer,
     Question,
@@ -56,12 +57,12 @@ class SurveyListPagination(PageNumberPagination):
 
 @mcp_viewset()
 class SurveyViewSet(ModelViewSet[Survey]):
-    """CRUD for surveys. List and retrieve: any authenticated user; create/update/delete: staff only."""
+    """CRUD for surveys. List/retrieve: any authenticated user; create: any authenticated (author=request.user); update/delete: staff or author."""
 
     def get_permissions(self) -> list[permissions.BasePermission]:
         if self.action in ["list", "retrieve"]:
             return [permissions.IsAuthenticated()]
-        return [permissions.IsAuthenticated(), permissions.IsAdminUser()]
+        return [permissions.IsAuthenticated(), IsSurveyAuthorOrStaff()]
 
     def get_queryset(self) -> models.QuerySet[Survey]:
         return Survey.objects.all().order_by("-id").select_related("author")
