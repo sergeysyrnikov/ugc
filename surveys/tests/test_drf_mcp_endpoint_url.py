@@ -59,4 +59,3 @@ class DRFMCPQuestionsListTests(TestCase):
         texts = {item["text"] for item in structured_content}
         self.assertIn("Question 1", texts)
         self.assertIn("Question 2", texts)
-

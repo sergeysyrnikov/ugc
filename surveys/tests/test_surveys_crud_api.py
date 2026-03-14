@@ -65,7 +65,8 @@ class SurveysCrudApiTests(APITestCase):
         list_url = reverse("survey-list")
         list_resp = self.client.get(list_url)
         self.assertEqual(list_resp.status_code, status.HTTP_200_OK)
-        self.assertIsInstance(list_resp.data, list)
+        self.assertIn("results", list_resp.data)
+        self.assertIsInstance(list_resp.data["results"], list)
 
         create_payload: dict[str, Any] = {
             "title": "New Survey",

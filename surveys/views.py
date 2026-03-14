@@ -3,6 +3,7 @@ from __future__ import annotations
 from django.db import models
 from djangorestframework_mcp.decorators import mcp_viewset
 from rest_framework import permissions, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -32,6 +33,25 @@ class SurveyListPagination(PageNumberPagination):
     page_size = 20
     page_size_query_param = "page_size"
     max_page_size = 100
+    max_page_number = 5000
+
+    def paginate_queryset(self, queryset, request, view=None):
+        page_number = request.query_params.get(self.page_query_param, 1)
+        try:
+            page_number = int(page_number)
+        except (TypeError, ValueError):
+            page_number = 1
+        if page_number > self.max_page_number:
+            raise ValidationError(
+                detail={
+                    "detail": (
+                        f"Page number {page_number} exceeds maximum {self.max_page_number}. "
+                        "Use a lower page number or filter the list."
+                    )
+                },
+                code="page_too_high",
+            )
+        return super().paginate_queryset(queryset, request, view=view)
 
 
 @mcp_viewset()
