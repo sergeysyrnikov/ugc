@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+from django.db import models
 from djangorestframework_mcp.decorators import mcp_viewset
 from rest_framework import permissions, status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -26,6 +28,12 @@ from surveys.serializers import (
 from ugc.metrics import UGC_SURVEY_REQUESTS_TOTAL
 
 
+class SurveyListPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = "page_size"
+    max_page_size = 100
+
+
 @mcp_viewset()
 class SurveyViewSet(ModelViewSet[Survey]):
     """CRUD for surveys. List and retrieve: any authenticated user; create/update/delete: staff only."""
@@ -35,8 +43,11 @@ class SurveyViewSet(ModelViewSet[Survey]):
             return [permissions.IsAuthenticated()]
         return [permissions.IsAuthenticated(), permissions.IsAdminUser()]
 
-    queryset = Survey.objects.all().order_by("-created_at")
+    def get_queryset(self) -> models.QuerySet[Survey]:
+        return Survey.objects.all().order_by("-id").select_related("author")
+
     serializer_class = SurveySerializer
+    pagination_class = SurveyListPagination
 
 
 @mcp_viewset()

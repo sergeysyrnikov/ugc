@@ -26,7 +26,10 @@ class HttpMetricsMiddleware:
             return response
         finally:
             elapsed = time.perf_counter() - start_time
-
+            print(f"elapsed: {elapsed}")
+            print(f"method: {method}")
+            print(f"path: {path}")
+            print(f"status_code: {status_code}")
             HTTP_REQUESTS_TOTAL.labels(
                 method=method,
                 path=path,
