@@ -16,6 +16,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     display_name = models.CharField(max_length=255, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    is_operator = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     date_joined = models.DateTimeField(default=timezone.now)
 
     objects = UserManager()

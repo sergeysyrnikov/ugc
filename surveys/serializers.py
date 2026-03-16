@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any, ClassVar
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
@@ -79,8 +81,10 @@ class QuestionNestedWritableSerializer(serializers.ModelSerializer):
 # --- CRUD serializers (staff-only API) ---
 
 
-class SurveySerializer(serializers.ModelSerializer):
+class SurveyListRetrieveSerializer(serializers.ModelSerializer):
     """CRUD serializer for Survey."""
+
+    questions: ClassVar[Any] = QuestionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Survey
@@ -92,27 +96,18 @@ class SurveySerializer(serializers.ModelSerializer):
             "status",
             "created_at",
             "updated_at",
+            "questions",
         ]
         read_only_fields = ["created_at", "updated_at"]
         extra_kwargs = {"author": {"required": False}}
 
-    def create(self, validated_data: dict) -> Survey:
-        if validated_data.get("author") is None:
-            request = self.context.get("request")
-            if request and getattr(request, "user", None):
-                validated_data["author"] = request.user
-        return super().create(validated_data)
 
-
-class SurveyWithQuestionsSerializer(SurveySerializer):
+class SurveyWithQuestionsSerializer(SurveyListRetrieveSerializer):
     """Survey serializer with nested questions and answers (create/update/read)."""
 
-    questions = QuestionNestedWritableSerializer(
+    questions: ClassVar[Any] = QuestionNestedWritableSerializer(
         many=True, required=False, default=list
     )
-
-    class Meta(SurveySerializer.Meta):
-        fields = SurveySerializer.Meta.fields + ["questions"]
 
     def create(self, validated_data: dict) -> Survey:
         questions_data = validated_data.pop("questions", [])

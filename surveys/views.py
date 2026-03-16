@@ -9,7 +9,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from surveys.permissions import IsSurveyAuthorOrStaff
 from surveys.models import (
     Answer,
     Question,
@@ -18,6 +17,7 @@ from surveys.models import (
     SubmissionAnswer,
     Survey,
 )
+from surveys.permissions import IsSurveyAuthorOrStaff
 from surveys.serializers import (
     AnswerCrudSerializer,
     QuestionCrudSerializer,
@@ -25,7 +25,8 @@ from surveys.serializers import (
     QuestionTemplateSerializer,
     SubmissionAnswerSerializer,
     SubmissionSerializer,
-    SurveySerializer,
+    SurveyListRetrieveSerializer,
+    SurveyWithQuestionsSerializer,
 )
 from ugc.metrics import UGC_SURVEY_REQUESTS_TOTAL
 
@@ -65,9 +66,20 @@ class SurveyViewSet(ModelViewSet[Survey]):
         return [permissions.IsAuthenticated(), IsSurveyAuthorOrStaff()]
 
     def get_queryset(self) -> models.QuerySet[Survey]:
-        return Survey.objects.all().order_by("-id").select_related("author")
+        return (
+            Survey.objects.all()
+            .order_by("-id")
+            .select_related("author")
+            .prefetch_related("questions", "questions__answers")
+        )
 
-    serializer_class = SurveySerializer
+    def get_serializer_class(
+        self,
+    ) -> type[SurveyListRetrieveSerializer | SurveyWithQuestionsSerializer]:
+        if self.action in ["list", "retrieve"]:
+            return SurveyListRetrieveSerializer
+        return SurveyWithQuestionsSerializer
+
     pagination_class = SurveyListPagination
 
 

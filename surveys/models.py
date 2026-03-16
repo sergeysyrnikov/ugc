@@ -108,6 +108,10 @@ class Question(TimeStampedModel):
                 condition=models.Q(order__gte=1, order__lte=30),
                 name="question_order_between_1_and_30",
             ),
+            models.UniqueConstraint(
+                fields=["survey", "order"],
+                name="question_survey_order_unique",
+            ),
         ]
 
     def __str__(self) -> str:
@@ -145,6 +149,10 @@ class Answer(TimeStampedModel):
             models.CheckConstraint(
                 condition=models.Q(order__gte=1, order__lte=15),
                 name="answer_order_between_1_and_15",
+            ),
+            models.UniqueConstraint(
+                fields=["question", "order"],
+                name="answer_question_order_unique",
             ),
         ]
 
@@ -202,9 +210,11 @@ class SubmissionAnswer(TimeStampedModel):
         related_name="submission_answers",
         verbose_name="Question",
     )
-    answer: models.ForeignKey = models.ForeignKey(
+    answer = models.ForeignKey(
         Answer,
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name="submission_answers",
         verbose_name="Answer",
     )
